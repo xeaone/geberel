@@ -1,0 +1,15 @@
+{
+  "name": "cherubim",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "node test/server.js",
+    "client": "node test/client.js"
+  },
+  "author": "Alexander Elias",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "ws": "^1.1.0"
+  }
+}
