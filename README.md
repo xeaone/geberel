@@ -1,13 +1,13 @@
-# Cherubim #
+# Geberel #
 
-Is a simple IPC (inter process communicator) but really it is just WebSockets.
+A simple IPC (inter process communicator) but really it is just WebSockets. Short simple and sweet. 
 
 
 ## Server ##
 
 ```JavaScript
-const Cherubim = require('../index');
-const Server = Cherubim.server;
+const Geberel = require('../index');
+const Server = Geberel.server;
 
 const options = { port: 8000 };
 
@@ -25,8 +25,8 @@ Server(options, function (error, Socket) {
 ## Client ##
 
 ```JavaScript
-const Cherubim = require('../index');
-const Client = Cherubim.client;
+const Geberel = require('../index');
+const Client = Geberel.client;
 
 const options = { address: 'ws://localhost:8000'};
 
