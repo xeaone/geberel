@@ -60,16 +60,16 @@ Client(options, function (error, socket) {
 
 * **Socket.receive** - 'Event' `String`, 'Callback' `Function`
 
-	* **Callback** - 'Data' `Object`, 'Callback' `Function` (optional)
+	* **Callback** - 'Data' `Any`, 'Callback' `Function` (optional)
 
 * **Socket.transmit** - 'Event' `String`, 'Data' `Object`, 'Callback' `Function` (optional)
 
-	* **Callback** - 'Data' `Object`
+	* **Callback** - 'Data' `Any`
 
 
 ## Options ##
 
-* Geberel.server
+* **Geberel.server**
 	* `port` Number **Default: 8000**
 	* `host` String
 	* `server` http.Server
@@ -81,7 +81,7 @@ Client(options, function (error, socket) {
 	* `clientTracking` Boolean
 	* `perMessageDeflate` Boolean|Object
 
-* Geberel.client
+* **Geberel.client**
 	* `address` String **Default: ws://localhost:8000**
 	* `autoClose` Boolean (closes all client sockets after completion) **Default: false**
 	* `protocol` String
