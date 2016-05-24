@@ -2,17 +2,16 @@
 
 const Server = require('../index').server;
 
-const options = { port: 8000 };
+const options = { port: 7777 };
 
 Server(options, function (error, socket) {
 	if (error) throw error;
 
-	socket.receive('test', function (data, cb) {
+	socket.receive('test', function (data, callback) {
+		console.log(data);
 		data.more = 'works';
-		return cb(data);
+		return callback(data);
 	});
 
-	socket.transmit('another', { blue: 'red' }, function (data) {
-		console.log(data);
-	});
+	socket.transmit('another', 'cool thing');
 });

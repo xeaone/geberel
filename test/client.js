@@ -2,7 +2,7 @@
 
 const Client = require('../index').client;
 
-const options = { address: 'ws://localhost:8000'};
+const options = { address: 'ws://localhost:7777', autoClose: false };
 
 Client(options, function (error, socket) {
 	if (error) throw error;
@@ -11,8 +11,7 @@ Client(options, function (error, socket) {
 		console.log(data);
 	});
 
-	socket.receive('another', function (data, cb) {
-		data.colors = 'cool';
-		return cb(data);
+	socket.receive('another', function (data) {
+		console.log(data);
 	});
 });

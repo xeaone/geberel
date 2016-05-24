@@ -1,48 +1,66 @@
 'use strict';
 
-const Socket = function (WsSocket) {
+const Socket = function (WsSocket, autoClose) {
 	const self = this;
 
 	self.WsSocket = WsSocket;
+	self.autoCloseTotal = 0;
+	self.autoCloseCount = 0;
+	self.autoClose = autoClose || false;
 };
 
-Socket.prototype.receive = function (_eventName, callback) {
+Socket.prototype.receive = function (eventName, callback) {
 	const self = this;
 
-	const cb = function (data) {
-		data._eventName = _eventName;
+	self.autoCloseTotal++;
 
-		self._send(data, function () {
-			self.WsSocket.close();
+	const eventCallback = function (eventData) {
+		const payload = {
+			eventData: eventData,
+			eventName: eventName
+		};
+
+		self._send(payload, function () {
+			self._close();
 			return;
 		});
 	};
 
-	self._message(function (data) {
-		if (data._eventName === _eventName) {
-			delete data._eventName;
-			if (callback) return callback(data, cb);
-			else return;
+	self._message(function (payload) {
+		if (payload.eventName === eventName) {
+			if (payload.isEventCallback) { return callback(payload.eventData, eventCallback); }
+			else { self._close(); return callback(payload.eventData); }
 		}
 	});
 };
 
-Socket.prototype.transmit = function (_eventName, data, callback) {
+Socket.prototype.transmit = function (eventName, eventData, callback) {
 	const self = this;
+	const isCallback = (callback) ? true : false;
 
-	data._eventName = _eventName;
+	self.autoCloseTotal++;
 
-	self._send(data, function () {
-		if (!callback) { self.WsSocket.close(); return; }
+	const payload = {
+		eventData: eventData,
+		eventName: eventName,
+		isEventCallback: isCallback
+	};
 
-		self._message(function (data) {
-			if (data._eventName === _eventName) {
-				self.WsSocket.close();
-				delete data._eventName;
-				return callback(data);
+	self._send(payload, function () {
+		if (!isCallback) { self._close(); return; }
+
+		self._message(function (payload) {
+			if (payload.eventName === eventName) {
+				self._close();
+				return callback(payload.eventData);
 			}
 		});
 	});
+};
+
+Socket.prototype.close = function () {
+	const self = this;
+	self.WsSocket.close();
 };
 
 Socket.prototype._message = function (callback) {
@@ -60,13 +78,16 @@ Socket.prototype._send = function (data, callback) {
 	data = JSON.stringify(data);
 
 	self.WsSocket.send(data, function () {
-		if (callback) callback();
-		return;
+		return callback();
 	});
 };
 
-const socket = function (WsSocket) {
-	return new Socket (WsSocket);
+Socket.prototype._close = function () {
+	const self = this;
+
+	self.autoCloseCount++;
+
+	if (self.autoClose === true && self.autoCloseTotal === self.autoCloseCount) self.WsSocket.close();
 };
 
-module.exports = socket;
+module.exports = Socket;

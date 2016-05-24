@@ -16,7 +16,7 @@ module.exports = function (options, callback) {
 	});
 
 	WsServer.on('connection', function (WsSocket) {
-		const socket = Socket (WsSocket);
+		const socket = new Socket (WsSocket, options.autoClose);
 		return callback(null, socket);
 	});
 };

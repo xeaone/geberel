@@ -6,7 +6,6 @@ const Ws = require('ws');
 const ADDRESS = 'ws://localhost:8000';
 const DEFAULTS = { address: ADDRESS };
 
-
 module.exports = function (options, callback) {
 	if (typeof options === 'function') { callback = options; options = DEFAULTS; }
 
@@ -17,7 +16,7 @@ module.exports = function (options, callback) {
 	});
 
 	WsSocket.on('open', function () {
-		const socket = Socket (WsSocket);
+		const socket = new Socket (WsSocket, options.autoClose);
 		return callback(null, socket);
 	});
 };
