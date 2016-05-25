@@ -12,8 +12,6 @@ const Socket = function (WsSocket, autoClose) {
 Socket.prototype.receive = function (eventName, callback) {
 	const self = this;
 
-	self.autoCloseTotal++;
-
 	const eventCallback = function (eventData) {
 		const payload = {
 			eventData: eventData,
@@ -26,6 +24,8 @@ Socket.prototype.receive = function (eventName, callback) {
 		});
 	};
 
+	self.autoCloseTotal++;
+
 	self._message(function (payload) {
 		if (payload.eventName === eventName) {
 			if (payload.isEventCallback) { return callback(payload.eventData, eventCallback); }
@@ -35,16 +35,18 @@ Socket.prototype.receive = function (eventName, callback) {
 };
 
 Socket.prototype.transmit = function (eventName, eventData, callback) {
+	if (typeof eventData === 'function') { callback = eventData; eventData = null; }
+
 	const self = this;
 	const isCallback = (callback) ? true : false;
-
-	self.autoCloseTotal++;
 
 	const payload = {
 		eventData: eventData,
 		eventName: eventName,
 		isEventCallback: isCallback
 	};
+
+	self.autoCloseTotal++;
 
 	self._send(payload, function () {
 		if (!isCallback) { self._close(); return; }
