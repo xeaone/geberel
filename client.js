@@ -1,13 +1,13 @@
 'use strict';
 
+const Globals = require('./globals');
 const Socket = require('./socket');
 const Ws = require('ws');
 
-const ADDRESS = 'ws://localhost:8000';
-const DEFAULTS = { address: ADDRESS };
+const CLIENT_DEFAULTS = Globals.clientDefaults;
 
 module.exports = function (options, callback) {
-	if (typeof options === 'function') { callback = options; options = DEFAULTS; }
+	if (typeof options === 'function') { callback = options; options = CLIENT_DEFAULTS; }
 
 	const WsSocket = new Ws(options.address, options);
 

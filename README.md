@@ -48,6 +48,21 @@ Client(options, function (error, socket) {
 ```
 
 
+## State ##
+
+```JavaScript
+const Geberel = require('geberel');
+const State = Geberel.state;
+
+const options = { address: 'ws://localhost:8000' };
+
+State(options, function (result) {
+	if (result.error) console.log(result);
+	else console.log(result); // { connected: true, status: 'ACTIVE' }
+});
+```
+
+
 ## API ##
 
 * **Geberel.client** - 'Options' `Object`, 'Callback' `Function`
