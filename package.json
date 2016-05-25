@@ -1,6 +1,6 @@
 {
   "name": "geberel",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Geberel IPC With WebSockets",
   "main": "index.js",
   "directories": {
