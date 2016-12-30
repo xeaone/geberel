@@ -1,6 +1,6 @@
 {
   "name": "geberel",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Geberel IPC With WebSockets",
   "main": "index.js",
   "directories": {
@@ -28,7 +28,7 @@
     "WebSockets"
   ],
   "author": "Alexander Elias",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/AlexanderElias/geberel/issues"
   },
