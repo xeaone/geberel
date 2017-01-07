@@ -1,17 +1,11 @@
-'use strict';
-
 const Client = require('../index').client;
 
-const options = { address: 'ws://localhost:7777', autoClose: false };
-
-Client(options, function (error, socket) {
+Client(function (error, socket) {
 	if (error) throw error;
 
-	socket.transmit('test', { test: 'stuff' }, function (data) {
+	socket.emit('test', { test: 'stuff' }, function (error, data) {
+		if (error) throw error;
 		console.log(data);
 	});
 
-	socket.receive('another', function (data) {
-		console.log(data);
-	});
 });

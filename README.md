@@ -65,53 +65,49 @@ State(options, function (result) {
 
 ## API ##
 
-* **Geberel.client** - 'Options' `Object`, 'Callback' `Function`
+- **Geberel.client** - 'Options' `Object`, 'Callback' `Function`
+	- **Callback** - 'Error' `Object`, 'Socket' `Object`
 
-	* **Callback** - 'Error' `Object`, 'Socket' `Object`
+- **Geberel.server** - 'Options' `Object`, 'Callback' `Function`
+	- **Callback** - 'Error' `Object`, 'Socket' `Object`
 
-* **Geberel.server** - 'Options' `Object`, 'Callback' `Function`
+- **Socket.on** - 'Event' `String`, 'Callback' `Function`
+	- **Callback** - 'Data' `Any`, 'Callback' `Function` (optional)
 
-	* **Callback** - 'Error' `Object`, 'Socket' `Object`
-
-* **Socket.receive** - 'Event' `String`, 'Callback' `Function`
-
-	* **Callback** - 'Data' `Any`, 'Callback' `Function` (optional)
-
-* **Socket.transmit** - 'Event' `String`, 'Data' `Object`, 'Callback' `Function` (optional)
-
-	* **Callback** - 'Data' `Any`
+- **Socket.emit** - 'Event' `String`, 'Data' `Object`, 'Callback' `Function` (optional)
+	- **Callback** - 'Data' `Any`
 
 
 ## Options ##
 
-* **Geberel.server**
-	* `port` Number **Default: 8000**
-	* `host` String
-	* `server` http.Server
-	* `verifyClient` Function
-	* `handleProtocols` Function
-	* `path` String
-	* `noServer` Boolean
-	* `disableHixie` Boolean
-	* `clientTracking` Boolean
-	* `perMessageDeflate` Boolean|Object
+- **Geberel.server**
+	- `port` Number **Default: 8000**
+	- `host` String
+	- `server` http.Server
+	- `verifyClient` Function
+	- `handleProtocols` Function
+	- `path` String
+	- `noServer` Boolean
+	- `disableHixie` Boolean
+	- `clientTracking` Boolean
+	- `perMessageDeflate` Boolean|Object
 
-* **Geberel.client**
-	* `address` String **Default: ws://localhost:8000**
-	* `autoClose` Boolean (closes all client sockets after completion) **Default: false**
-	* `protocol` String
-	* `agent` Agent
-	* `headers` Object
-	* `protocolVersion` Number|String
-	-- the following only apply if address is a String
-	* `host` String
-	* `origin` String
-	* `pfx` String|Buffer
-	* `key` String|Buffer
-	* `passphrase` String
-	* `cert` String|Buffer
-	* `ca` Array
-	* `ciphers` String
-	* `rejectUnauthorized` Boolean
-	* `perMessageDeflate` Boolean|Object
-	* `localAddress` String
+- **Geberel.client**
+	- `address` String **Default: ws://localhost:8000**
+	- `autoClose` Boolean (closes all client sockets after completion) **Default: false**
+	- `protocol` String
+	- `agent` Agent
+	- `headers` Object
+	- `protocolVersion` Number|String
+	- These following only apply if address is a String
+		- `host` String
+		- `origin` String
+		- `pfx` String|Buffer
+		- `key` String|Buffer
+		- `passphrase` String
+		- `cert` String|Buffer
+		- `ca` Array
+		- `ciphers` String
+		- `rejectUnauthorized` Boolean
+		- `perMessageDeflate` Boolean|Object
+		- `localAddress` String
