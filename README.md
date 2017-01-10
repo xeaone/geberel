@@ -81,33 +81,33 @@ If `Socket.emit` is provided a callback then it will expect data to be returned 
 ## Options ##
 
 **Geberel.server**
-	- `port` Number **Default: 8000**
-	- `host` String
-	- `server` http.Server
-	- `verifyClient` Function
-	- `handleProtocols` Function
-	- `path` String
-	- `noServer` Boolean
-	- `disableHixie` Boolean
-	- `clientTracking` Boolean
-	- `perMessageDeflate` Boolean|Object
+- `port` Number **Default: 8000**
+- `host` String
+- `server` http.Server
+- `verifyClient` Function
+- `handleProtocols` Function
+- `path` String
+- `noServer` Boolean
+- `disableHixie` Boolean
+- `clientTracking` Boolean
+- `perMessageDeflate` Boolean|Object
 
 **Geberel.client**
-	- `address` String **Default: ws://localhost:8000**
-	- `autoClose` Boolean (closes all client sockets after completion) **Default: false**
-	- `protocol` String
-	- `agent` Agent
-	- `headers` Object
-	- `protocolVersion` Number|String
-	- These following only apply if address is a String
-		- `host` String
-		- `origin` String
-		- `pfx` String|Buffer
-		- `key` String|Buffer
-		- `passphrase` String
-		- `cert` String|Buffer
-		- `ca` Array
-		- `ciphers` String
-		- `rejectUnauthorized` Boolean
-		- `perMessageDeflate` Boolean|Object
-		- `localAddress` String
+- `address` String **Default: ws://localhost:8000**
+- `autoClose` Boolean (closes all client sockets after completion) **Default: false**
+- `protocol` String
+- `agent` Agent
+- `headers` Object
+- `protocolVersion` Number|String
+- These following only apply if address is a String
+	- `host` String
+	- `origin` String
+	- `pfx` String|Buffer
+	- `key` String|Buffer
+	- `passphrase` String
+	- `cert` String|Buffer
+	- `ca` Array
+	- `ciphers` String
+	- `rejectUnauthorized` Boolean
+	- `perMessageDeflate` Boolean|Object
+	- `localAddress` String
