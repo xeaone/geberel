@@ -14,13 +14,12 @@ const options = { port: 8000 };
 Server(options, function (error, socket) {
 	if (error) throw error;
 
-	socket.receive('test', function (data, callback) {
+	socket.on('test', function (error, data) {
 		console.log(data); // { hello: 'people' }
 		data.hello = 'world';
-		return callback(data);
 	});
 
-	socket.transmit('another', 'cool thing');
+	socket.emit('another', 'cool thing');
 });
 ```
 
@@ -31,16 +30,16 @@ Server(options, function (error, socket) {
 const Geberel = require('geberel');
 const Client = Geberel.client;
 
-const options = { address: 'ws://localhost:8000', autoClose: false };
+const options = { address: 'ws://localhost:8000', autoClose: true };
 
 Client(options, function (error, socket) {
 	if (error) throw error;
 
-	socket.transmit('test', { hello: 'people' }, function (data) {
+	socket.emit('test', { hello: 'people' }, function (error, data) {
 		console.log(data); // { hello: 'world' }
 	});
 
-	socket.receive('another', function (data) {
+	socket.on('another', function (error, data) {
 		console.log(data); // cool thing
 	});
 });
@@ -64,23 +63,24 @@ State(options, function (result) {
 
 
 ## API ##
+If `Socket.emit` is provided a callback then it will expect data to be returned by the `Socket.on` callback. Other wise it will act just like event listeners and triggers. Auto closing sockets is `true` be default.
 
-- **Geberel.client** - 'Options' `Object`, 'Callback' `Function`
-	- **Callback** - 'Error' `Object`, 'Socket' `Object`
+- **Geberel.client** 'Options' `Object`, 'Callback' `Function`
+	- **Callback** 'Error' `Object`, 'Socket' `Object`
 
-- **Geberel.server** - 'Options' `Object`, 'Callback' `Function`
-	- **Callback** - 'Error' `Object`, 'Socket' `Object`
+- **Geberel.server** 'Options' `Object`, 'Callback' `Function`
+	- **Callback** 'Error' `Object`, 'Socket' `Object`
 
-- **Socket.on** - 'Event' `String`, 'Callback' `Function`
-	- **Callback** - 'Data' `Any`, 'Callback' `Function` (optional)
+- **Socket.on** 'Event' `String`, 'Callback' `Function`
+	- **Callback** 'Data' `Any`, 'Callback' `Function`
 
-- **Socket.emit** - 'Event' `String`, 'Data' `Object`, 'Callback' `Function` (optional)
-	- **Callback** - 'Data' `Any`
+- **Socket.emit** 'Event' `String`, 'Data' `Object`, 'Callback' `Function` (optional)
+	- **Callback** 'Data' `Any`
 
 
 ## Options ##
 
-- **Geberel.server**
+**Geberel.server**
 	- `port` Number **Default: 8000**
 	- `host` String
 	- `server` http.Server
@@ -92,7 +92,7 @@ State(options, function (result) {
 	- `clientTracking` Boolean
 	- `perMessageDeflate` Boolean|Object
 
-- **Geberel.client**
+**Geberel.client**
 	- `address` String **Default: ws://localhost:8000**
 	- `autoClose` Boolean (closes all client sockets after completion) **Default: false**
 	- `protocol` String
