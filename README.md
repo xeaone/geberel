@@ -19,7 +19,13 @@ Server(options, function (error, socket) {
 		data.hello = 'world';
 	});
 
-	socket.emit('another', 'cool thing');
+	socket.respond('async', function (error, data, done) {
+		setTimeout(function () {
+			data.more = 'async';
+			done(data);
+		}, 1000);
+	});
+
 });
 ```
 
@@ -36,12 +42,13 @@ Client(options, function (error, socket) {
 	if (error) throw error;
 
 	socket.emit('test', { hello: 'people' }, function (error, data) {
-		console.log(data); // { hello: 'world' }
+		console.log(data); // { hello: 'people' }
 	});
 
-	socket.on('another', function (error, data) {
-		console.log(data); // cool thing
+	socket.request('async', { hello: 'world' }, function (error, data) {
+		console.log(data);
 	});
+
 });
 
 ```
@@ -72,17 +79,24 @@ If `Socket.emit` is provided a callback then it will expect data to be returned 
 	- **Callback** 'Error' `Object`, 'Socket' `Object`
 
 - **Socket.on** 'Event' `String`, 'Callback' `Function`
-	- **Callback** 'Data' `Any`, 'Callback' `Function`
+	- **Callback** 'Data' `Object || Array || String`
 
-- **Socket.emit** 'Event' `String`, 'Data' `Object`, 'Callback' `Function` (optional)
-	- **Callback** 'Data' `Any`
+- **Socket.emit** 'Event' `String`, 'Data' `Object` (optional), 'Callback' `Function` (optional)
+	- **Callback** 'Data' `Object || Array || String`
+
+- **Socket.respond** 'Event' `String`, 'Callback' `Function`
+	- **Callback** 'Data' `Object || Array || String`, 'Done' `Function`
+		- **Done** Accepts data to send back to the `Socket.request`.
+
+- **Socket.request** 'Event' `String`, 'Data' `Object`, 'Callback' `Function`
+	- **Callback** 'Data' `Object || Array || String` sent from the `Socket.respond`.
 
 
 ## Options ##
 
 **Geberel.server**
 - `port` Number **Default: 8000**
-- `host` String
+- `host` String **Default: 127.0.0.1**
 - `server` http.Server
 - `verifyClient` Function
 - `handleProtocols` Function
@@ -94,7 +108,7 @@ If `Socket.emit` is provided a callback then it will expect data to be returned 
 
 **Geberel.client**
 - `address` String **Default: ws://localhost:8000**
-- `autoClose` Boolean (closes all client sockets after completion) **Default: false**
+- `autoClose` Boolean (closes all client sockets after completion) **Default: true**
 - `protocol` String
 - `agent` Agent
 - `headers` Object

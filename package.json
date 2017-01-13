@@ -1,6 +1,6 @@
 {
   "name": "geberel",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Geberel IPC With WebSockets",
   "main": "index.js",
   "directories": {
@@ -9,7 +9,6 @@
   "dependencies": {
     "ws": "^1.1.0"
   },
-  "devDependencies": {},
   "scripts": {
     "s": "node ./test/server.js",
     "c": "node ./test/client.js"
