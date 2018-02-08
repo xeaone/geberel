@@ -1,9 +1,8 @@
 const Server = require('../index').server;
 
-Promise.resolve().then(function () {
-	return Server();
-}).then(function (socket) {
-
+Server(function (error, socket) {
+	if (error) throw error;
+	
 	socket.on('emit', function (data) {
 		console.log(data);
 	});
@@ -15,11 +14,9 @@ Promise.resolve().then(function () {
 	// 	}, 1000);
 	// });
 
-	socket.respond('sync', function (data, done) {
-		data.more = 'sync';
-		done(data);
-	});
+	// socket.respond('sync', function (data, done) {
+	// 	data.more = 'sync';
+	// 	done(data);
+	// });
 
-}).catch(function (error) {
-	console.error(error);
 });
