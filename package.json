@@ -1,7 +1,7 @@
 {
 	"name": "geberel",
-	"version": "2.1.0",
-	"description": "Geberel IPC With UNIX Domain",
+	"version": "3.0.0",
+	"description": "An IPC library using UNIX domains",
 	"main": "index.js",
 	"directories": {
 		"test": "test"

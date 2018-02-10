@@ -1,17 +1,15 @@
-# Geberel #
+# Geberel
 
-A simple IPC (inter process communicator) but really it is just WebSockets. Short simple and sweet.
+An IPC library uses UNIX domains.
 
 
-## Server ##
-
-```JavaScript
+## Server
+```js
 const Geberel = require('geberel');
-const Server = Geberel.server;
 
-const options = { port: 8000 };
+const options = { path: '/tmp/geberel.sock' };
 
-Server(options, function (error, socket) {
+Geberel.server(options, function (error, socket) {
 	if (error) throw error;
 
 	socket.on('test', function (error, data) {
@@ -29,16 +27,12 @@ Server(options, function (error, socket) {
 });
 ```
 
-
-## Client ##
-
-```JavaScript
+## Client
+```js
 const Geberel = require('geberel');
-const Client = Geberel.client;
+const options = { path: '/tmp/geberel.sock' };
 
-const options = { address: 'ws://localhost:8000', autoClose: true };
-
-Client(options, function (error, socket) {
+Geberel.client(options, function (error, socket) {
 	if (error) throw error;
 
 	socket.emit('test', { hello: 'people' }, function (error, data) {
@@ -50,26 +44,19 @@ Client(options, function (error, socket) {
 	});
 
 });
-
 ```
 
-
-## State ##
-
-```JavaScript
+## State
+```js
 const Geberel = require('geberel');
-const State = Geberel.state;
+const options = { path: '/tmp/geberel.sock' };
 
-const options = { address: 'ws://localhost:8000' };
-
-State(options, function (result) {
-	if (result.error) console.log(result);
-	else console.log(result); // { connected: true, status: 'ACTIVE' }
+Geberel.state(options, function (result) {
+	console.log(result); // { connected: true, status: 'ACTIVE' }
 });
 ```
 
-
-## API ##
+## API
 If `Socket.emit` is provided a callback then it will expect data to be returned by the `Socket.on` callback. Other wise it will act just like event listeners and triggers. Auto closing sockets is `true` be default.
 
 - **Geberel.client** 'Options' `Object`, 'Callback' `Function`
@@ -92,10 +79,11 @@ If `Socket.emit` is provided a callback then it will expect data to be returned 
 	- **Callback** 'Data' `Object || Array || String` sent from the `Socket.respond`.
 
 
-## Options ##
+## Options
 
-**Geberel.server**
-- `port` Number **Default: 8000**
+### Geberel.server
+- `path: String` UNIX domain socket path. **Default: /tmp/geberel.sock**
+<!-- - `port` Number **Default: 8000**
 - `host` String **Default: 127.0.0.1**
 - `server` http.Server
 - `verifyClient` Function
@@ -104,10 +92,11 @@ If `Socket.emit` is provided a callback then it will expect data to be returned 
 - `noServer` Boolean
 - `disableHixie` Boolean
 - `clientTracking` Boolean
-- `perMessageDeflate` Boolean|Object
+- `perMessageDeflate` Boolean|Object -->
 
-**Geberel.client**
-- `address` String **Default: ws://localhost:8000**
+### Geberel.client
+- `path: String` UNIX domain socket path. **Default: /tmp/geberel.sock**
+<!-- - `address` String **Default: ws://localhost:8000**
 - `autoClose` Boolean (closes all client sockets after completion) **Default: true**
 - `protocol` String
 - `agent` Agent
@@ -124,4 +113,7 @@ If `Socket.emit` is provided a callback then it will expect data to be returned 
 	- `ciphers` String
 	- `rejectUnauthorized` Boolean
 	- `perMessageDeflate` Boolean|Object
-	- `localAddress` String
+	- `localAddress` String -->
+
+### Geberel.state
+- `path: String` UNIX domain socket path. **Default: /tmp/geberel.sock**

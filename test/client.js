@@ -11,12 +11,12 @@ Client(function (error, socket) {
 		console.log('emit: bar');
 	});
 
-	// socket.request('async', { hello: 'world' }, function (data) {
-	// 	console.log(data);
-	// });
+	socket.request('async', { hello: 'world' }, function (data) {
+		console.log(data);
+	});
 
-	// socket.request('sync', { hello: 'bar' }, function (data) {
-	// 	console.log(data);
-	// });
+	socket.request('sync', { hello: 'bar' }, function (data) {
+		console.log(data);
+	});
 
 });
