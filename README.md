@@ -2,7 +2,6 @@
 
 An IPC library uses UNIX domains.
 
-
 ## Server
 ```js
 const Geberel = require('geberel');
@@ -14,12 +13,11 @@ Geberel.server(options, function (error, socket) {
 
 	socket.on('test', function (error, data) {
 		console.log(data); // { hello: 'people' }
-		data.hello = 'world';
 	});
 
 	socket.respond('async', function (error, data, done) {
 		setTimeout(function () {
-			data.more = 'async';
+			data.foo = 'bar';
 			done(data);
 		}, 1000);
 	});
@@ -35,12 +33,12 @@ const options = { path: '/tmp/geberel.sock' };
 Geberel.client(options, function (error, socket) {
 	if (error) throw error;
 
-	socket.emit('test', { hello: 'people' }, function (error, data) {
-		console.log(data); // { hello: 'people' }
+	socket.emit('test', { hello: 'people' }, function (error) {
+		// triggers the test event
 	});
 
 	socket.request('async', { hello: 'world' }, function (error, data) {
-		console.log(data);
+		console.log(data); // { hello: 'world' , foo: bar }
 	});
 
 });
@@ -51,69 +49,66 @@ Geberel.client(options, function (error, socket) {
 const Geberel = require('geberel');
 const options = { path: '/tmp/geberel.sock' };
 
-Geberel.state(options, function (result) {
-	console.log(result); // { connected: true, status: 'ACTIVE' }
+Geberel.stat(options, function (stat) {
+	console.log(stat); // { connected: true, status: 'ACTIVE' }
 });
 ```
 
 ## API
-If `Socket.emit` is provided a callback then it will expect data to be returned by the `Socket.on` callback. Other wise it will act just like event listeners and triggers. Auto closing sockets is `true` be default.
 
-- **Geberel.client** 'Options' `Object`, 'Callback' `Function`
-	- **Callback** 'Error' `Object`, 'Socket' `Object`
+### Geberel.server(options, callback)
+- `options: Object`
+	- `path: String` UNIX domain socket path. (Default: /tmp/geberel.sock)
+	- `allowHalfOpen: Boolean` Indicates whether half-opened TCP connections are allowed. (Default: false)
+	- `pauseOnConnect: Boolean`  Indicates whether the socket should be paused on incoming connections. (Default: false)
+	- `socket: Object`
+		- `allowHalfOpen: Boolean` Indicates whether half-opened TCP connections are allowed. (Default: false)
+		- `readable: Boolean` Allow reads on the socket when an fd is passed, otherwise ignored. (Default: false)
+		- `writable: Boolean` Allow writes on the socket when an fd is passed, otherwise ignored. (Default: false)
+		- `fd: Number` If specified, wrap around an existing socket with the given file descriptor, otherwise a new socket will be created.
+- `callback: Function`
+	- `error: Error`
+	- `socket: Socket`
 
-- **Geberel.server** 'Options' `Object`, 'Callback' `Function`
-	- **Callback** 'Error' `Object`, 'Socket' `Object`
+### Geberel.client(options, callback)
+- `options: Object`
+	- `path: String` UNIX domain socket path. (Default: /tmp/geberel.sock)
+	- `fd: Number` If specified, wrap around an existing socket with the given file descriptor, otherwise a new socket will be created.
+	- `allowHalfOpen: Boolean` Indicates whether half-opened TCP connections are allowed. (Default: false)
+	- `readable: Boolean` Allow reads on the socket when an fd is passed, otherwise ignored. (Default: false)
+	- `writable: Boolean` Allow writes on the socket when an fd is passed, otherwise ignored. (Default: false)
+	- `fd: Number` If specified, wrap around an existing socket with the given file descriptor, otherwise a new socket will be created.
+- `callback: Function`
+	- `error: Error`
+	- `socket: Socket`
 
-- **Socket.on** 'Event' `String`, 'Callback' `Function`
-	- **Callback** 'Data' `Object || Array || String`
+### Geberel.stat(options, callback)
+- `options: Object`
+	- `path: String` UNIX domain socket path. (Default: /tmp/geberel.sock)
+- `callback: Function`
+	- `error: Error`
+	- `stat: Object`
+		- `error: Error`
+		- `connected: Boolean`
+		- `status: String` ACTIVE, INACTIVE, ERRORED
 
-- **Socket.emit** 'Event' `String`, 'Data' `Object` (optional), 'Callback' `Function` (optional)
-	- **Callback** 'Data' `Object || Array || String`
+### Geberel.socket.on(event, callback)
+- `event: String`
+- `callback: Function`
+	- `data: Object, Array` Parsed using `JSON.parse`.
 
-- **Socket.respond** 'Event' `String`, 'Callback' `Function`
-	- **Callback** 'Data' `Object || Array || String`, 'Done' `Function`
-		- **Done** Accepts data to send back to the `Socket.request`.
+### Geberel.socket.respond(event, callback)
+- `event: String`
+- `callback: Function`
+	- `done: Function` Accepts data to send back to `Socket.request`.
+		- `data: Object, Array` Parsed using `JSON.parse`.
 
-- **Socket.request** 'Event' `String`, 'Data' `Object`, 'Callback' `Function`
-	- **Callback** 'Data' `Object || Array || String` sent from the `Socket.respond`.
+### Geberel.socket.emit(event[, data], callback)
+- `event: String`
+- `data: Object, Array` Stringified using `JSON.stringify`.
+- `callback: Function`
 
-
-## Options
-
-### Geberel.server
-- `path: String` UNIX domain socket path. **Default: /tmp/geberel.sock**
-<!-- - `port` Number **Default: 8000**
-- `host` String **Default: 127.0.0.1**
-- `server` http.Server
-- `verifyClient` Function
-- `handleProtocols` Function
-- `path` String
-- `noServer` Boolean
-- `disableHixie` Boolean
-- `clientTracking` Boolean
-- `perMessageDeflate` Boolean|Object -->
-
-### Geberel.client
-- `path: String` UNIX domain socket path. **Default: /tmp/geberel.sock**
-<!-- - `address` String **Default: ws://localhost:8000**
-- `autoClose` Boolean (closes all client sockets after completion) **Default: true**
-- `protocol` String
-- `agent` Agent
-- `headers` Object
-- `protocolVersion` Number|String
-- These following only apply if address is a String
-	- `host` String
-	- `origin` String
-	- `pfx` String|Buffer
-	- `key` String|Buffer
-	- `passphrase` String
-	- `cert` String|Buffer
-	- `ca` Array
-	- `ciphers` String
-	- `rejectUnauthorized` Boolean
-	- `perMessageDeflate` Boolean|Object
-	- `localAddress` String -->
-
-### Geberel.state
-- `path: String` UNIX domain socket path. **Default: /tmp/geberel.sock**
+### Geberel.socket.request(event[, data], callback)
+- `event: String`
+- `data: Object, Array` Stringified using `JSON.stringify`.
+- `callback: Function`
