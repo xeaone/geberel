@@ -2,8 +2,8 @@
 
 const Server = require('./lib/server');
 const Client = require('./lib/client');
-const State = require('./lib/state');
+const Stat = require('./lib/stat');
 
 exports.server = Server;
 exports.client = Client;
-exports.state = State;
+exports.stat = Stat;
