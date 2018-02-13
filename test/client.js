@@ -1,7 +1,12 @@
 const Client = require('../index').client;
 
-Client(function (error, socket) {
-	if (error) throw error;
+const client = new Client();
+
+client.on('error', function (error) {
+	throw error;
+});
+
+client.on('connect', function (socket) {
 
 	socket.emit('emit', { hello: 'foo' }, function () {
 		console.log('emit: foo');
@@ -20,3 +25,5 @@ Client(function (error, socket) {
 	});
 
 });
+
+client.open();

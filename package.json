@@ -7,8 +7,8 @@
 		"test": "test"
 	},
 	"scripts": {
-		"s": "node ./test/server.js",
-		"c": "node ./test/client.js"
+		"s": "node test/server",
+		"c": "node test/client"
 	},
 	"repository": {
 		"type": "git",

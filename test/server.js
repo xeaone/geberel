@@ -1,7 +1,12 @@
 const Server = require('../index').server;
 
-Server(function (error, socket) {
-	if (error) throw error;
+const server = new Server();
+
+server.on('error', function (error) {
+	throw error;
+});
+
+server.on('socket', function (socket) {
 
 	socket.on('emit', function (data) {
 		console.log(data);
@@ -20,3 +25,5 @@ Server(function (error, socket) {
 	});
 
 });
+
+server.open();
