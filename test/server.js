@@ -6,7 +6,7 @@ server.on('error', function (error) {
 	throw error;
 });
 
-server.on('socket', function (socket) {
+server.on('connect', function (socket) {
 
 	socket.on('emit', function (data) {
 		console.log(data);
