@@ -8,8 +8,12 @@ server.on('error', function (error) {
 
 server.on('connect', function (socket) {
 
-	socket.on('emit', function (data) {
-		console.log(data);
+	socket.on('error', function (error) {
+		console.log(error);
+	});
+
+	socket.when('emit', function (data) {
+		console.log(`emit: ${JSON.stringify(data)}`);
 	});
 
 	socket.respond('async', function (data, done) {

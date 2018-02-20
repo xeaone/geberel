@@ -2,8 +2,8 @@
 
 const Server = require('./lib/server');
 const Client = require('./lib/client');
-const Stat = require('./lib/stat');
+const Socket = require('./lib/socket');
 
 exports.server = Server;
 exports.client = Client;
-exports.stat = Stat;
+exports.socket = Socket;

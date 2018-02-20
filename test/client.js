@@ -1,6 +1,7 @@
 const Client = require('../index').client;
 
-const client = new Client();
+// const options = { socket: { autoClose: false } };
+const client = new Client(options);
 
 client.on('error', function (error) {
 	throw error;
@@ -8,20 +9,24 @@ client.on('error', function (error) {
 
 client.on('connect', function (socket) {
 
-	socket.emit('emit', { hello: 'foo' }, function () {
+	socket.on('error', function (error) {
+		console.log(error);
+	});
+
+	socket.relay('emit', { hello: 'foo' }, function () {
 		console.log('emit: foo');
 	});
 
-	socket.emit('emit', { hello: 'bar' }, function () {
+	socket.relay('emit', { hello: 'bar' }, function () {
 		console.log('emit: bar');
 	});
 
 	socket.request('async', { hello: 'world' }, function (data) {
-		console.log(data);
+		console.log(`async: ${JSON.stringify(data)}`);
 	});
 
 	socket.request('sync', { hello: 'bar' }, function (data) {
-		console.log(data);
+		console.log(`sync: ${JSON.stringify(data)}`);
 	});
 
 });

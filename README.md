@@ -1,3 +1,4 @@
+
 # Geberel
 
 An IPC library uses UNIX domains.
@@ -5,17 +6,24 @@ An IPC library uses UNIX domains.
 ## Server
 ```js
 const Geberel = require('geberel');
-
 const options = { path: '/tmp/geberel.sock' };
+const server = new Geberel.server(options);
 
-Geberel.server(options, function (error, socket) {
-	if (error) throw error;
+server.on('error', function (error) {
+	console.log(error);
+});
 
-	socket.on('test', function (error, data) {
+server.on('connect', function (socket) {
+
+	socket.on('error', function (error) {
+		console.log(error);
+	});
+
+	socket.when('test', function (data) {
 		console.log(data); // { hello: 'people' }
 	});
 
-	socket.respond('async', function (error, data, done) {
+	socket.respond('async', function (data, done) {
 		setTimeout(function () {
 			data.foo = 'bar';
 			done(data);
@@ -23,17 +31,27 @@ Geberel.server(options, function (error, socket) {
 	});
 
 });
+
+server.open();
 ```
 
 ## Client
 ```js
 const Geberel = require('geberel');
 const options = { path: '/tmp/geberel.sock' };
+const client = new Geberel.client(options);
 
-Geberel.client(options, function (error, socket) {
-	if (error) throw error;
+client.on('error', function (error) {
+	console.log(error);
+});
 
-	socket.emit('test', { hello: 'people' }, function (error) {
+client.on('connect', function (socket) {
+
+	client.on('error', function (error) {
+		console.log(error);
+	});
+
+	socket.relay('test', { hello: 'people' }, function (error) {
 		// triggers the test event
 	});
 
@@ -42,73 +60,86 @@ Geberel.client(options, function (error, socket) {
 	});
 
 });
-```
 
-## State
-```js
-const Geberel = require('geberel');
-const options = { path: '/tmp/geberel.sock' };
-
-Geberel.stat(options, function (stat) {
-	console.log(stat); // { connected: true, status: 'ACTIVE' }
-});
+client.open();
 ```
 
 ## API
 
 ### Geberel.server(options, callback)
+Extends the Events.EventEmitter class.
 - `options: Object`
 	- `path: String` UNIX domain socket path. (Default: /tmp/geberel.sock)
 	- `allowHalfOpen: Boolean` Indicates whether half-opened TCP connections are allowed. (Default: false)
 	- `pauseOnConnect: Boolean`  Indicates whether the socket should be paused on incoming connections. (Default: false)
 	- `socket: Object`
+		- `autoClose: Boolean` Defaults to true.
 		- `allowHalfOpen: Boolean` Indicates whether half-opened TCP connections are allowed. (Default: false)
 		- `readable: Boolean` Allow reads on the socket when an fd is passed, otherwise ignored. (Default: false)
 		- `writable: Boolean` Allow writes on the socket when an fd is passed, otherwise ignored. (Default: false)
 		- `fd: Number` If specified, wrap around an existing socket with the given file descriptor, otherwise a new socket will be created.
-- `callback: Function`
-	- `error: Error`
-	- `socket: Socket`
+- `close: Function`
+- `open: Function`
+- Events
+	- error
+	- open
+	- close
+	- connect
 
 ### Geberel.client(options, callback)
+Extends the Events.EventEmitter class.
 - `options: Object`
+	- `socket: Object`
+		- `autoClose: Boolean` Defaults to true.
 	- `path: String` UNIX domain socket path. (Default: /tmp/geberel.sock)
 	- `fd: Number` If specified, wrap around an existing socket with the given file descriptor, otherwise a new socket will be created.
 	- `allowHalfOpen: Boolean` Indicates whether half-opened TCP connections are allowed. (Default: false)
 	- `readable: Boolean` Allow reads on the socket when an fd is passed, otherwise ignored. (Default: false)
 	- `writable: Boolean` Allow writes on the socket when an fd is passed, otherwise ignored. (Default: false)
 	- `fd: Number` If specified, wrap around an existing socket with the given file descriptor, otherwise a new socket will be created.
-- `callback: Function`
-	- `error: Error`
-	- `socket: Socket`
+- `close: Function`
+- `open: Function`
+- Events
+	- end
+	- drain
+	- error
+	- open
+	- close
+	- connect
+	- timeout
 
-### Geberel.stat(options, callback)
+### Geberel.socket([socket]\[, options])
+Extends the Events.EventEmitter class.
+- `socket: Net.Socket`
 - `options: Object`
-	- `path: String` UNIX domain socket path. (Default: /tmp/geberel.sock)
-- `callback: Function`
-	- `error: Error`
-	- `stat: Object`
-		- `error: Error`
-		- `connected: Boolean`
-		- `status: String` ACTIVE, INACTIVE, ERRORED
-
-### Geberel.socket.on(event, callback)
-- `event: String`
-- `callback: Function`
-	- `data: Object, Array` Parsed using `JSON.parse`.
-
-### Geberel.socket.respond(event, callback)
-- `event: String`
-- `callback: Function`
-	- `done: Function` Accepts data to send back to `Socket.request`.
+	- `unref: Boolean` Defaults to false.
+	- `encoding: String` Defaults to utf8.
+	- `autoClose: Boolean` Defaults to true.
+- `when: Function`
+	- `event: String`
+	- `callback: Function`
 		- `data: Object, Array` Parsed using `JSON.parse`.
+- `respond: Function`
+	- `event: String`
+	- `callback: Function`
+		- `done: Function` Accepts data to send back to `Socket.request`.
+			- `data: Object, Array` Parsed using `JSON.parse`.
+- `relay: Function`
+	- `event: String`
+	- `data: Object, Array` Stringified using `JSON.stringify`.
+	- `callback: Function`
+- `request: Function`
+	- `event: String`
+	- `data: Object, Array` Stringified using `JSON.stringify`.
+	- `callback: Function`
+- Events
+	- end
+	- error
+	- close
 
-### Geberel.socket.emit(event[, data], callback)
-- `event: String`
-- `data: Object, Array` Stringified using `JSON.stringify`.
-- `callback: Function`
+## Authors
+[AlexanderElias](https://github.com/AlexanderElias)
 
-### Geberel.socket.request(event[, data], callback)
-- `event: String`
-- `data: Object, Array` Stringified using `JSON.stringify`.
-- `callback: Function`
+## License
+[Why You Should Choose MPL-2.0](http://veldstra.org/2016/12/09/you-should-choose-mpl2-for-your-opensource-project.html)
+This project is licensed under the MPL-2.0 License
